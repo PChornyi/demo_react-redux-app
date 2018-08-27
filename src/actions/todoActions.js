@@ -22,51 +22,54 @@ export const DELETE_TODO = '[Todo] DELETE_TODO';
 export const DELETE_TODO_SUCCESS = '[Todo] DELETE_TODO_SUCCESS';
 export const DELETE_TODO_ERROR = '[Todo] DELETE_TODO_ERROR';
 
-export const CreateTodo = (todo) => {
+
+
+export function CreateTodo(todo){
     return (dispatch, getState) => {
         return TodoApi.createTodo(todo).then(res => {
-            dispatch(CreateTodoSuccess(res.data.data))
+            dispatch(CreateTodoSuccess(res.data))
         })
     }
-};
+}
 
-export const CreateTodoSuccess = (todo) => {
+export function CreateTodoSuccess(todo){
     return {
-        type: CREATE_TODO_SUCCESS,
+        type:CREATE_TODO_SUCCESS,
         todo
     }
-};
+}
 
-export const GetTodos = () => {
-    return (dispactch, getState) => {
+export function GetTodos(){
+    return (dispatch, getState) => {
         return TodoApi.getTodo().then(res => {
-            dispactch(GetTodoSuccess(res))
+            dispatch(GetTodoSuccess(res))
+
         })
     }
-};
+}
 
-export const GetTodoSuccess = (todos) => {
+export function GetTodoSuccess(todos){
     return {
-        type: GET_TODOS_SUCCESS,
+        type:GET_TODOS_SUCCESS,
         todos
     }
-};
+}
 
-export const StartEditing = (_id) => {
+
+export function StartEditing(_id) {
     return {
         type: START_EDITING,
         _id
     }
-};
-
-export const CancelEditing = (_id) => {
+}
+export function CancelEditing(_id) {
     return {
         type: CANCEL_EDITING,
         _id
     }
-};
+}
 
-export const UpdateTodo = (todo) => {
+export function UpdateTodo(todo) {
     return (dispatch, getState) => {
 
         dispatch({
@@ -77,17 +80,16 @@ export const UpdateTodo = (todo) => {
             dispatch(UpdateTodoSuccess(res.data.data))
         })
     }
-};
-
-export const UpdateTodoSuccess = (todo) => {
+}
+export function UpdateTodoSuccess(todo) {
     return {
         type: UPDATE_TODO_SUCCESS,
         todo,
         _id: todo._id
     }
-};
+}
 
-export const DeleteTodo = (todo) => {
+export function DeleteTodo(todo) {
     return (dispatch, getState) => {
         dispatch({
             type: DELETE_TODO,
@@ -99,12 +101,11 @@ export const DeleteTodo = (todo) => {
             }
         })
     }
-};
-
-export const DeleteTodoSuccess = (todo) => {
+}
+export function DeleteTodoSuccess(todo) {
     return {
         type: DELETE_TODO_SUCCESS,
         todo,
         _id: todo._id
     }
-};
+}

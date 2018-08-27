@@ -4,30 +4,9 @@ import {Input} from 'semantic-ui-react';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-const Options = (props) => {
-    if (props.todo && props.todo.editing) {
-        return EditOptions(props);
-    } else {
-        return AddOptions(props)
-    }
-};
-const EditOptions = (props) => {
-    return (
-        <Table.Cell>
-            <Button color='green' onClick={props.editTodo}>Edit</Button>
-            <Button color='blue' onClick={props.cancelEditing}>Cancel</Button>
-        </Table.Cell>
-    );
-};
-const AddOptions = (props) => {
-    return (
-        <Table.Cell>
-            <Button color='green' onClick={props.createTodo}>Create</Button>
-            <Button color='blue' onClick={props.resetTodo}>Reset</Button>
-        </Table.Cell>
-    );
-};
+import {bindActionCreators} from "redux";
+import * as todoActions from "../actions/todoActions";
+import {connect} from 'react-redux';
 
 class EditTodo extends Component {
 
@@ -62,18 +41,20 @@ class EditTodo extends Component {
 
     createTodo = (event) => {
         this.resetTodo();
-        this.props.createTodo(this.state);
+        // this.props.createTodo(this.state);
+        this.props.actions.CreateTodo(this.state);
     };
 
     editTodo = (event) => {
-        this.props.editTodo(this.state);
+
+        this.props.actions.UpdateTodo(this.state);
     };
 
     resetTodo = () => {
         this.setState({title: "", description: "", date: moment()});
     };
     cancelEditing = () => {
-        this.props.cancelEditing();
+        this.props.actions.CancelEditing(this.state.id);
     };
 
     getDateForDatePicker() {
@@ -108,5 +89,38 @@ class EditTodo extends Component {
     }
 
 }
+const Options = (props) => {
+    if (props.todo && props.todo.editing) {
+        return EditOptions(props);
+    } else {
+        return AddOptions(props)
+    }
+};
+const EditOptions = (props) => {
+    return (
+        <Table.Cell>
+            <Button color='green' onClick={props.editTodo}>Edit</Button>
+            <Button color='blue' onClick={props.cancelEditing}>Cancel</Button>
+        </Table.Cell>
+    );
+};
+const AddOptions = (props) => {
+    return (
+        <Table.Cell>
+            <Button color='green' onClick={props.createTodo}>Create</Button>
+            <Button color='blue' onClick={props.resetTodo}>Reset</Button>
+        </Table.Cell>
+    );
+};
+function mapStateToProps(state, ownProps) {
+    return {
+        todos: state.todos
+    }
+}
 
-export default EditTodo;
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(todoActions, dispatch)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(EditTodo);

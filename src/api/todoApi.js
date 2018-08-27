@@ -1,8 +1,8 @@
 import {HttpClient} from './httpClient';
 
-const API = "http://localhost:3000/api";
+const API = 'http://localhost:8080';
 
-const TODO_API = `${API}`;
+const TODO_API = `${API}/todo`;
 const createTodo = todo => {
     return HttpClient.post(TODO_API, todo)
 };
@@ -14,7 +14,7 @@ const updateTodo = todo => {
     return HttpClient.put(TODO_API, todo);
 };
 const deleteTodo = todo => {
-    return HttpClient.delete(TODO_API, todo);
+    return HttpClient.delete(`${TODO_API}/${todo.id}`);
 };
 const TodoApi = {createTodo, getTodo, updateTodo, deleteTodo};
 export {TodoApi}

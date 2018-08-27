@@ -4,15 +4,14 @@ import {Routes} from './Route'
 import {Provider} from 'react-redux'
 
 import {configureStore} from './store/configureStore';
-import * as ActionCreator from './actions/todoActions';
+import * as TodoActions from './actions/todoActions';
 
 const store = configureStore();
 
-store.dispatch(ActionCreator.GetTodos());
+store.dispatch(TodoActions.GetTodos());
 
 const App = (props) => {
     return (
-
         <Provider store={store}>
             <Routes/>
         </Provider>

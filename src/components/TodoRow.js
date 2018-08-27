@@ -1,39 +1,86 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Button, Table} from 'semantic-ui-react';
+import {bindActionCreators} from "redux";
+import * as todoActions from "../actions/todoActions";
+import connect from "react-redux/es/connect/connect";
+import moment from "moment";
 
-const TodoRow = (props) => {
-    return (
-        <Table.Row className={getClassName(props)}>
-            <Table.Cell>{props.todo.title}</Table.Cell>
-            <Table.Cell>{props.todo.description}</Table.Cell>
-            <Table.Cell>{props.todo.date}</Table.Cell>
-            <Table.Cell className="options">
-                {props.todo.status !== 'done' &&
-                <Button className="option-buttons" color='green' onClick={props.completeTodo}>
-                    <i className="fa fa-check"/>
-                </Button>}
-                <Button className="option-buttons" color='blue' onClick={props.startEditing}>
-                    <i className="fa fa-pencil"/>
-                </Button>
-                <Button className="option-buttons" color='red' onClick={props.deleteTodo}>
-                    <i className="fa fa-trash"/>
-                </Button>
-            </Table.Cell>
-        </Table.Row>
-    );
-};
+class TodoRow extends Component {
 
-const getClassName = (props) => {
+    constructor(props) {
+        super(props);
+        if (this.props.todo) {
+            this.state = {
+                ...this.props.todo
+            }
+        } else {
+            this.state = {
+                ...this.emptyTodo()
+            }
+        }
+    }
 
-  return  `${props.todo.updating
-        ? "updating"
-        : ""}
-    ${props.todo.status === 'done'
-        ? "done"
-        : ""}
-    ${props.todo.deleting
-        ? "deleting"
-        : ""}`
+    emptyTodo = () => {
+        return {title: "", description: "", date: moment()};
+    };
+    deleteTodo = (event) => {
+        this.props.actions.DeleteTodo(this.state)
+    };
+    completeTodo = (event) => {
+        this.props.actions.UpdateTodo({...this.state, status: 'done'})
+    };
+    startEditing = (event) => {
+        this.props.actions.StartEditing(this.state.id)
 
-};
-export default TodoRow;
+    };
+
+    render() {
+        return (
+            <Table.Row>
+                <Table.Cell>{this.state.title}</Table.Cell>
+                <Table.Cell>{this.state.description}</Table.Cell>
+                <Table.Cell>{this.state.date}</Table.Cell>
+                <Table.Cell className="options">
+
+                    <Button className="option-buttons" color='green' onClick={this.completeTodo}>
+                        <i className="fa fa-check"/>
+                    </Button>
+                    <Button className="option-buttons" color='blue' onClick={this.startEditing}>
+                        <i className="fa fa-pencil"/>
+                    </Button>
+                    <Button className="option-buttons" color='red' onClick={this.deleteTodo}>
+                        <i className="fa fa-trash"/>
+                    </Button>
+                </Table.Cell>
+            </Table.Row>
+        );
+    };
+}
+
+// const getClassName = () => {
+//
+//   return  `${this.state.status
+//         ? "updating"
+//         : ""}
+//     ${this.state.status === 'done'
+//         ? "done"
+//         : ""}
+//     ${this.state.status.deleting
+//         ? "deleting"
+//         : ""}`
+//
+// };
+
+function mapStateToProps(state, ownProps) {
+    return {
+        todos: state.todos
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(todoActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoRow);
