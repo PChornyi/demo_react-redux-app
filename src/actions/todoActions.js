@@ -1,4 +1,3 @@
-
 import {TodoApi} from "../api/todoApi";
 
 export const CREATE_TODO = '[Todo] CREATE_TODO';
@@ -9,7 +8,7 @@ export const GET_TODOS = '[Todo] GET_TODOS';
 export const GET_TODOS_SUCCESS = '[Todo] GET_TODOS_SUCCESS';
 export const GET_TODOS_ERROR = '[Todo] GET_TODOS_ERROR';
 
-export const START_EDITING ='[Todo] START_EDITING';
+export const START_EDITING = '[Todo] START_EDITING';
 export const CANCEL_EDITING = '[Todo] CANCEL_EDITING';
 
 export const UPDATE_TODO = '[Todo] UPDATE_TODO';
@@ -23,8 +22,7 @@ export const DELETE_TODO_SUCCESS = '[Todo] DELETE_TODO_SUCCESS';
 export const DELETE_TODO_ERROR = '[Todo] DELETE_TODO_ERROR';
 
 
-
-export function CreateTodo(todo){
+export function CreateTodo(todo) {
     return (dispatch, getState) => {
         return TodoApi.createTodo(todo).then(res => {
             dispatch(CreateTodoSuccess(res.data))
@@ -32,40 +30,44 @@ export function CreateTodo(todo){
     }
 }
 
-export function CreateTodoSuccess(todo){
+export function CreateTodoSuccess(todo) {
     return {
-        type:CREATE_TODO_SUCCESS,
+        type: CREATE_TODO_SUCCESS,
         todo
     }
 }
 
-export function GetTodos(){
-    return (dispatch, getState) => {
-        return TodoApi.getTodo().then(res => {
-            dispatch(GetTodoSuccess(res))
-
-        })
+export function GetTodos() {
+    return (dispatch) => {
+        return TodoApi.getTodo()
+            .then(res => {
+                dispatch(GetTodoSuccess(res))
+            })
+            .catch((err) => {
+                console.error.bind(err);
+            })
     }
 }
 
-export function GetTodoSuccess(todos){
+export function GetTodoSuccess(todos) {
     return {
-        type:GET_TODOS_SUCCESS,
+        type: GET_TODOS_SUCCESS,
         todos
     }
 }
 
 
-export function StartEditing(_id) {
+export function StartEditing(todo) {
     return {
         type: START_EDITING,
-        _id
+        todo
     }
 }
-export function CancelEditing(_id) {
+
+export function CancelEditing(todo) {
     return {
         type: CANCEL_EDITING,
-        _id
+        todo
     }
 }
 
@@ -77,10 +79,11 @@ export function UpdateTodo(todo) {
             todo
         });
         TodoApi.updateTodo(todo).then(res => {
-            dispatch(UpdateTodoSuccess(res.data.data))
+            dispatch(UpdateTodoSuccess(res.data))
         })
     }
 }
+
 export function UpdateTodoSuccess(todo) {
     return {
         type: UPDATE_TODO_SUCCESS,
@@ -90,22 +93,31 @@ export function UpdateTodoSuccess(todo) {
 }
 
 export function DeleteTodo(todo) {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         dispatch({
             type: DELETE_TODO,
             todo
         });
-        TodoApi.deleteTodo(todo).then(res => {
-            if (res.status === 204) {
-                dispatch(DeleteTodoSuccess(todo))
+      TodoApi.deleteTodo(todo.id)
+            .then(res => {
+            if (res.status === 200) {
+                dispatch(DeleteTodoSuccess(todo.id));
+                dispatch(GetTodos())
             }
         })
+            // .then())
+            .catch((err) => {
+                console.error.bind(err);
+            })
     }
 }
-export function DeleteTodoSuccess(todo) {
+
+export function DeleteTodoSuccess(_id) {
     return {
         type: DELETE_TODO_SUCCESS,
-        todo,
-        _id: todo._id
+        _id
+
     }
 }
+// componentWillReceiveProps()
+// componentDidUpdate()

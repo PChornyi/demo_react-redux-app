@@ -21,45 +21,50 @@ class EditTodo extends Component {
                 ...this.emptyTodo()
             }
         }
+
     }
 
+
+
     emptyTodo = () => {
-        return {title: "", description: "", date: moment()};
+        return {title: "", description: "", date: moment()}
     };
 
+    changeValue(newValue){
+        this.setState({newValue});
+    }
     changeNewTitle = (event) => {
-        this.setState({title: event.target.value});
+        this.setState({title: event.target.value})
     };
 
     changeNewDescription = (event) => {
-        this.setState({description: event.target.value});
+        this.setState({description: event.target.value})
     };
 
     changeNewDate = (event) => {
-        this.setState({date: event});
+        this.setState({date: event})
     };
 
     createTodo = (event) => {
         this.resetTodo();
-        // this.props.createTodo(this.state);
-        this.props.actions.CreateTodo(this.state);
+        this.props.createTodo(this.state)
     };
-
     editTodo = (event) => {
+        this.props.editTodo(this.state);
+        this.changeValue(this.state)
 
-        this.props.actions.UpdateTodo(this.state);
     };
 
     resetTodo = () => {
-        this.setState({title: "", description: "", date: moment()});
+        this.setState({title: "", description: "", date: moment()})
     };
     cancelEditing = () => {
-        this.props.actions.CancelEditing(this.state.id);
+        this.props.cancelEditing();
     };
 
     getDateForDatePicker() {
-        return moment(this.state.date);
-    };
+        return moment(this.state.date)
+    }
 
     render() {
         return (

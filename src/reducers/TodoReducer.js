@@ -1,6 +1,11 @@
 import * as ActionTypes from "../actions/todoActions";
 
-const TodoReducer = (state = [], action) => {
+
+const initial = {
+    todos: []
+};
+
+const TodoReducer = (state = initial, action = {}) => {
     switch (action.type) {
         case ActionTypes.CREATE_TODO_SUCCESS: {
             return [
@@ -9,14 +14,19 @@ const TodoReducer = (state = [], action) => {
             ];
         }
         case ActionTypes.GET_TODOS_SUCCESS: {
-            return action.todos.data;
-        }
-        case ActionTypes.START_EDITING: {
 
             return {
                 ...state,
+                todos: action.todos.data
+            }
+        }
+        case ActionTypes.START_EDITING: {
+
+            return [{
+                ...state,
                 editing: true
             }
+            ];
 
         }
         case ActionTypes.CANCEL_EDITING: {
@@ -29,20 +39,21 @@ const TodoReducer = (state = [], action) => {
         }
         case ActionTypes.UPDATE_TODO: {
 
-            return {
+            return [{
                 ...state,
+                ...action.todo,
                 editing: false,
                 updating: true
-            }
+            }]
 
         }
         case ActionTypes.UPDATE_TODO_SUCCESS: {
 
-            return {
+            return [{
                 ...state,
                 ...action.todo,
                 updating: false
-            }
+            }]
         }
 
         case ActionTypes.DELETE_TODO: {
@@ -54,13 +65,16 @@ const TodoReducer = (state = [], action) => {
 
         }
         case ActionTypes.DELETE_TODO_SUCCESS: {
-
-            return false;
-
+            const filteredTodos = state.todos.filter((todo) => todo.id !== action.todo.id);
+            return {
+                ...state,
+                todos: filteredTodos,
+                deleting: false
+            }
         }
 
         default:
-            return state
+            return state.todos
     }
 
 };
